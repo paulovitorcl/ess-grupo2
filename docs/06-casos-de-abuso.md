@@ -25,7 +25,7 @@
 
 ---
 
-### CA03 - Sequestro de Conta via Manipulação do Token de Recuperação de Senha
+### CA02 - Sequestro de Conta via Manipulação do Token de Recuperação de Senha
 
 **Ator**: Atacante externo
 
@@ -50,7 +50,7 @@
 
 ---
 
-### CA04 - Criação Fraudulenta de Contas Privilegiadas sem Rastro de Auditoria
+### CA03 - Criação Fraudulenta de Contas Privilegiadas sem Rastro de Auditoria
 
 **Ator**: Usuário mal-intencionado ou conta administrativa comprometida
 
@@ -75,7 +75,7 @@
 
 ---
 
-### CA06 - Escalada de Privilégios por Manipulação de Matriz de Permissões (RBAC)
+### CA04 - Escalada de Privilégios por Manipulação de Matriz de Permissões (RBAC)
 
 **Ator**: Usuário operacional mal-intencionado
 
@@ -100,7 +100,7 @@
 
 ---
 
-### CA11 - Desvio de Pagamentos por Troca de Dados Bancários Cadastrais
+### CA05 - Desvio de Pagamentos por Troca de Dados Bancários Cadastrais
 
 **Ator**: Atacante interno ou invasor de conta
 
@@ -125,7 +125,7 @@
 
 ---
 
-### CA25 - Indisponibilidade e Alteração Massiva no Processamento da Folha de Pagamento
+### CA06 - Indisponibilidade e Alteração Massiva no Processamento da Folha de Pagamento
 
 **Ator**: Atacante interno ou usuário autenticado
 
@@ -151,7 +151,7 @@
 
 ---
 
-### CA26 - Exfiltração de Holerites e Salários de Terceiros via Parâmetro IDOR
+### CA07 - Exfiltração de Holerites e Salários de Terceiros via Parâmetro IDOR
 
 **Ator**: Funcionário comum ou usuário sem privilégio
 
@@ -176,7 +176,7 @@
 
 ---
 
-### CA32 - Exfiltração Massiva de Documentos Fiscais e Contábeis (PDF/XML)
+### CA08 - Exfiltração Massiva de Documentos Fiscais e Contábeis (PDF/XML)
 
 **Ator**: Usuário com acesso ao painel ou atacante via IDOR
 
@@ -201,7 +201,7 @@
 
 ---
 
-### CA38 - Adulteração da Tabela de Logs de Alteração de Lançamentos
+### CA09 - Adulteração da Tabela de Logs de Alteração de Lançamentos
 
 **Ator**: Usuário com privilégio de banco de dados ou administrador mal-intencionado
 
