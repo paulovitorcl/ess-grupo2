@@ -1,8 +1,12 @@
 # 5. Modelagem de Ameaças com STRIDE 
 
-Este documento detalha as categorias **RIDE** da metodologia STRIDE para o
+Este documento detalha as seis categorias da metodologia **STRIDE** para o
 sistema de contabilidade:
 
+- **S — Spoofing (Falsificação de identidade):** um atacante se passa por um
+  usuário ou sistema legítimo;
+- **T — Tampering (Adulteração de dados):** dados, documentos ou configurações
+  são modificados indevidamente;
 - **R — Repudiation (Repúdio):** um ator nega ter executado uma ação ou o
   sistema não consegue provar sua autoria;
 - **I — Information Disclosure (Divulgação de informação):** dados são
@@ -12,13 +16,6 @@ sistema de contabilidade:
 - **E — Elevation of Privilege (Elevação de privilégio):** um ator obtém
   permissões superiores às que lhe foram concedidas.
 
-Como complemento à análise RIDE, este documento também apresenta **ST**:
-
-- **S — Spoofing (Falsificação de identidade):** um atacante se passa por um
-  usuário ou sistema legítimo;
-- **T — Tampering (Adulteração de dados):** dados, documentos ou configurações
-  são modificados indevidamente.
-
 As ameaças foram derivadas dos atores, pontos de interação e fluxos descritos
 em [3. Usuários Ativos e Pontos de Interação](./03-usuarios-e-pontos-de-interacao.md)
 e [4. Visão Geral da Arquitetura e Fluxo](./04-visao-geral-arquitetura-fluxo.md).
@@ -27,14 +24,12 @@ Os identificadores `UC-01` a `UC-45` seguem a relação de casos de uso do
 
 ## 5.1 Escopo e fronteiras de confiança
 
-| Fronteira | Componentes e dados | Riscos RIDE prioritários |
+| Fronteira | Componentes e dados | Riscos STRIDE prioritários |
 |-----------|---------------------|--------------------------|
-| Acesso externo | Web/API, login, MFA, recuperação de senha e RBAC | Repúdio de acesso, exposição por sessão, indisponibilidade por abuso e bypass de autorização |
-| Núcleo e persistência | Cadastro, escrituração, fiscal, folha, pagamentos, banco de dados | Negação de alterações, vazamento entre empresas e acesso a funções administrativas |
-| Auditoria | Trilha de auditoria e logs de acesso | Impossibilidade de provar ações, exposição de logs e perda da evidência |
-| Integrações | Bancos, Receita Federal, prefeituras, eSocial e ERP | Vazamento em trânsito, indisponibilidade de dependências e uso de credenciais com privilégio excessivo |
-
-As ameaças ST nas mesmas fronteiras são detalhadas nas seções 5.2 e 5.3.
+| Acesso externo | Web/API, login, MFA, recuperação de senha e RBAC | Falsificação de identidade, adulteração de requisições, repúdio de acesso, exposição por sessão, indisponibilidade por abuso e bypass de autorização |
+| Núcleo e persistência | Cadastro, escrituração, fiscal, folha, pagamentos, banco de dados | Adulteração de dados financeiros, negação de alterações, vazamento entre empresas e acesso a funções administrativas |
+| Auditoria | Trilha de auditoria e logs de acesso | Adulteração de registros, impossibilidade de provar ações, exposição de logs e perda da evidência |
+| Integrações | Bancos, Receita Federal, prefeituras, eSocial e ERP | Falsificação de serviços, adulteração de mensagens, vazamento em trânsito, indisponibilidade de dependências e uso de credenciais com privilégio excessivo |
 
 ## 5.2 S — Spoofing (Falsificação de identidade)
 
@@ -263,18 +258,6 @@ alteração indevida e seu efeito no negócio.
 
 ## 5.8 Priorização
 
-### RIDE
-
-| Prioridade | Risco RIDE | Justificativa |
-|------------|------------|---------------|
-| Alta | E-02, E-03, E-06 | Podem permitir fraude entre empresas, alteração fiscal ou pagamento indevido. |
-| Alta | I-02, I-04, I-06 | Envolvem dados pessoais, bancários, trabalhistas e credenciais de terceiros. |
-| Alta | R-03, R-05, R-07 | Sem evidência confiável, incidentes financeiros e fiscais não podem ser investigados. |
-| Média/Alta | D-03, D-04, D-06 | Indisponibilidade em fechamento, folha ou transmissão pode causar perda de prazo. |
-| Média | D-01, D-02, D-05, D-07 | Devem ser tratados com limites e filas antes de afetarem o restante da plataforma. |
-
-### ST
-
 As prioridades são qualitativas e preliminares. Para ST, considera-se **Alta**
 a necessidade de tratar caminhos de tomada de conta ou fraude financeira
 direta; **Média** indica cenários que, além da falha descrita, dependem de
@@ -283,13 +266,19 @@ Essa distinção orienta a ordem inicial de análise, sem reduzir a gravidade
 do impacto. Não foram estimadas probabilidades nem medido o risco residual.
 As classificações devem ser revistas conforme a implementação e a exposição
 real; por exemplo, um armazenamento de sessões ou logs exposto eleva a urgência.
+As linhas de RI e DE mantêm as prioridades propostas nas respectivas análises.
 
-| Prioridade | Risco ST | Justificativa |
+| Prioridade | Risco STRIDE | Justificativa |
 |------------|------------|---------------|
 | Alta | S-01, S-03, S-06 | Permitem tomada de conta por credenciais, recuperação indevida ou uso de identidade empresarial comprometida, com possibilidade de operações externas. |
 | Média | S-02, S-04, S-05 | Exigem também obter um código ou sessão da vítima, ou conseguir intermediar/redirecionar uma conexão; o impacto potencial permanece elevado. |
 | Alta | T-01, T-02, T-03, T-04, T-05, T-07 | Afetam permissões, valores, obrigações ou pagamentos por operações de negócio expostas ao usuário. |
 | Média | T-06, T-08 | Pressupõem acesso à configuração ou às mensagens de integração, ou permissão de escrita sobre evidências; tornam-se urgentes se esses acessos estiverem expostos. |
+| Alta | E-02, E-03, E-06 | Podem permitir fraude entre empresas, alteração fiscal ou pagamento indevido. |
+| Alta | I-02, I-04, I-06 | Envolvem dados pessoais, bancários, trabalhistas e credenciais de terceiros. |
+| Alta | R-03, R-05, R-07 | Sem evidência confiável, incidentes financeiros e fiscais não podem ser investigados. |
+| Média/Alta | D-03, D-04, D-06 | Indisponibilidade em fechamento, folha ou transmissão pode causar perda de prazo. |
+| Média | D-01, D-02, D-05, D-07 | Devem ser tratados com limites e filas antes de afetarem o restante da plataforma. |
 
 ## 5.9 Critérios de verificação
 
