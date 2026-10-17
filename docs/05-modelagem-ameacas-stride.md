@@ -21,6 +21,8 @@ em [3. Usuários Ativos e Pontos de Interação](./03-usuarios-e-pontos-de-inter
 e [4. Visão Geral da Arquitetura e Fluxo](./04-visao-geral-arquitetura-fluxo.md).
 Os identificadores `UC-01` a `UC-45` seguem a relação de casos de uso do
 [README](../README.md).
+Os [casos de abuso](./06-casos-de-abuso.md) complementam os cenários e sua
+rastreabilidade, incluindo estornos, manipulação fiscal, integrações e pagamentos.
 
 ## 5.1 Escopo e fronteiras de confiança
 
@@ -47,7 +49,7 @@ em uma implementação.
 | S-03 | P2 / UC-03 | O atacante obtém um token de recuperação para sua própria conta e altera o identificador da conta na confirmação. Se o servidor não vincular o token à conta original, redefine a senha de outro cliente. | Sequestro da conta do cliente sem acesso ao e-mail da vítima. |
 | S-04 | P1 / UC-01, UC-05 | Um atacante reutiliza um identificador de sessão roubado que continua válido após logout ou expiração por inatividade, por ausência de invalidação no servidor. | Operações realizadas como usuário legítimo sem apresentar novamente suas credenciais. |
 | S-05 | P9 / UC-09, UC-33 a UC-36 | A aplicação aceita um servidor falso como banco, órgão fiscal ou ERP por não validar corretamente o certificado TLS e a identidade do destino. | Envio de informações ao atacante e aceitação de respostas de origem falsa. |
-| S-06 | P7, P8, P9 / UC-28, UC-29, UC-35, UC-37 | Um atacante utiliza uma chave privada de certificado digital ou credencial de API obtida indevidamente para se apresentar como a empresa perante um serviço externo. | Transmissões e operações fraudulentas atribuídas à empresa. |
+| S-06 | P7, P8, P9 / UC-28, UC-29, UC-33 a UC-37 | Um atacante utiliza uma chave privada de certificado digital ou credencial de API obtida indevidamente para se apresentar como a empresa perante um serviço externo ou como uma integração legítima nas requisições recebidas pela API do sistema. | Transmissões fraudulentas atribuídas à empresa e operações internas executadas sob a identidade da integração comprometida. |
 
 ### Controles recomendados
 
@@ -69,6 +71,9 @@ em uma implementação.
 5. **S-06:** manter segredos e chaves privadas em armazenamento protegido, com
    acesso mínimo, rotação e revogação; exigir reautenticação para alterações
    de credenciais e restringir seu uso por empresa, serviço e ambiente.
+   Nas APIs de entrada, autenticar a integração, verificar a validade da
+   credencial e validar a origem conforme o protocolo. Em caso de
+   comprometimento, revogar a credencial e os tokens dela derivados.
 
 ### Relação com os casos de abuso
 
@@ -79,6 +84,12 @@ em uma implementação.
   CA02: o atacante dispõe de um token válido da própria conta. A relação é
   temática; o caso de abuso precisa incorporar essa premissa para descrever
   a mesma sequência.
+- **CA12 → S-06:** uso indevido da identidade de uma integração para enviar
+  requisições à API do sistema com uma credencial comprometida.
+- **CA13 → S-01/S-04 (condicional):** variantes em que o acesso aos pagamentos
+  resulta do uso de credenciais vazadas ou de uma sessão roubada nas condições
+  descritas nessas ameaças. O vínculo depende do mecanismo de comprometimento
+  da conta.
 
 ## 5.3 T — Tampering (Adulteração de dados)
 
@@ -93,11 +104,11 @@ alteração indevida e seu efeito no negócio.
 |----|----------|-------------------|---------|
 | T-01 | P3 / UC-04, UC-06 | Um usuário inclui campos como `role` e permissões em uma requisição que os grava sem verificar quais campos e alterações são autorizados. | Adulteração do modelo de acesso e concessão de privilégios indevidos. |
 | T-02 | P4 / UC-07, UC-10, UC-11 | Um invasor de conta ou usuário interno altera regime tributário, plano de contas ou dados bancários sem a validação e aprovação exigidas para a mudança. | Cálculos distorcidos e, quando os dados alterados determinam o beneficiário, desvio de pagamentos. |
-| T-03 | P5 / UC-13 a UC-17 | Um usuário altera valores de lançamentos, importa registros manipulados ou modifica um período encerrado porque o servidor não verifica as regras contábeis e o estado do período. | Saldos incorretos, conciliações fraudulentas e perda de integridade da escrituração. |
-| T-04 | P6, P8 / UC-19 a UC-22, UC-29 a UC-32 | O atacante modifica bases de cálculo, itens de notas ou conteúdo de arquivos fiscais entre a geração, a aprovação e o envio, sem nova validação. | Guias, notas, SPED e relatórios com conteúdo diferente do aprovado. |
+| T-03 | P5 / UC-13 a UC-17 | Um usuário altera valores de lançamentos, importa registros manipulados ou modifica um período encerrado porque o servidor não verifica as regras contábeis e o estado do período. Também pode estornar receitas legítimas sem justificativa ou aprovação, com perda do histórico do valor original. | Saldos incorretos, conciliações fraudulentas, distorção de resultados fiscais e perda de integridade da escrituração. |
+| T-04 | P6, P8 / UC-19 a UC-22, UC-29 a UC-32 | O atacante altera dados contábeis ou bases de cálculo antes da apuração, sem revisão independente, e o sistema os utiliza para gerar obrigações incorretas. Em outra variante, modifica bases, itens de notas ou arquivos entre a geração, a aprovação e o envio, sem nova validação. | Apuração, guias, notas, SPED e relatórios incorretos ou diferentes do aprovado, com risco de multas e prejuízos financeiros. |
 | T-05 | P7 / UC-24 a UC-28 | Um usuário modifica rubricas, salários ou verbas após a revisão da folha, e o processamento utiliza a versão modificada sem exigir nova aprovação. | Pagamentos incorretos e transmissão de eventos trabalhistas adulterados. |
-| T-06 | P9 / UC-33 a UC-37 | Um atacante altera o endpoint configurado ou mensagens de integração que não têm sua integridade e origem verificadas conforme o protocolo. | Importação de extratos ou dados falsos e sincronização de informações adulteradas. |
-| T-07 | P10 / UC-44 | O atacante altera valor, beneficiário ou dados da guia após a aprovação, e o sistema executa o pagamento sem conferir os dados autorizados. | Desvio financeiro ou execução de transação diferente daquela aprovada. |
+| T-06 | P9 / UC-33 a UC-37 | Um atacante altera o endpoint configurado ou mensagens de integração sem verificação de integridade e origem. Também pode usar uma credencial comprometida para enviar dados adulterados à API, que os persiste sem validar empresa, operação, escopo e consistência de negócio. | Inserção ou alteração de dados contábeis, fiscais e financeiros fraudulentos, comprometendo os módulos que os utilizam. |
+| T-07 | P10 / UC-44 | O atacante cria ou altera uma operação e consegue encaminhá-la para execução sem aprovação independente dos dados do pagamento. Em outra variante, altera valor, beneficiário ou dados da guia após a aprovação, e o sistema não confere os dados autorizados. | Pagamento não autorizado, desvio financeiro ou execução de transação diferente daquela aprovada. |
 | T-08 | P11 / UC-38 a UC-41 | Um operador com permissão de escrita modifica ou exclui registros de auditoria ou substitui um arquivo exportado sem que a alteração seja detectada. | Ocultação de fraude, atribuição falsa de autoria e perda de confiabilidade das evidências. |
 
 ### Controles recomendados
@@ -108,17 +119,27 @@ alteração indevida e seu efeito no negócio.
 2. **T-03:** validar arquivos e registros importados, conferir totais e regras
    contábeis, usar transações e controlar alterações concorrentes. Bloquear
    gravações em períodos encerrados e exigir fluxo autorizado de reabertura.
+   Exigir permissão específica, justificativa e aprovação para estornos
+   críticos; preservar o lançamento original e o vínculo com o estorno.
 3. **T-04 e T-05:** versionar dados e documentos aprovados; qualquer alteração
    relevante deve invalidar a aprovação anterior. Conferir a versão antes de
    processar ou transmitir e usar assinatura digital quando aplicável.
+   Para a apuração fiscal, exigir revisão independente das alterações
+   relevantes nos dados de entrada antes de utilizá-los e vincular os
+   documentos gerados à versão dos dados revisados.
 4. **T-06:** proteger o transporte com TLS e validar mensagens conforme o
    contrato da integração, incluindo assinatura ou MAC quando previstos.
    Restringir e auditar alterações de endpoints. Um hash enviado junto do
    arquivo, ambos modificáveis pelo atacante, não comprova sua autenticidade.
+   Nas requisições recebidas, validar empresa, operação, escopo, campos,
+   formatos e regras de consistência antes de persistir os dados.
+   Autenticação ou assinatura válida não garante a correção dos dados de negócio.
 5. **T-07:** vincular a aprovação ao valor, beneficiário e demais dados
    significativos da transação; conferir esse vínculo no momento da execução.
-   Alterações devem exigir nova aprovação. Aplicar idempotência para impedir
-   efeitos financeiros duplicados em reenvios.
+   Exigir aprovação independente antes do encaminhamento para execução,
+   inclusive para operações recém-criadas. Alterações devem exigir nova
+   aprovação. Aplicar idempotência para impedir efeitos financeiros duplicados
+   em reenvios.
 6. **T-08:** separar permissões da aplicação e da auditoria, manter registros
    append-only e cópias protegidas; verificar a integridade de exportações por
    assinatura ou referência protegida. Alertar sobre tentativas de alteração
@@ -130,10 +151,17 @@ alteração indevida e seu efeito no negócio.
 - **CA04 → T-01:** adulteração de papéis e permissões.
 - **CA05 → T-02:** troca de dados bancários e desvio de pagamento. T-07 aborda
   uma variante, com alteração após a aprovação, não explicitada no CA05.
-- **CA06 → T-05:** ambos envolvem alteração indevida de valores da folha;
-  T-05 detalha a variante após revisão, enquanto CA06 também inclui sobrecarga.
-- **CA09 → T-08:** modificação de registros para ocultar ou atribuir a fraude
+- **CA06 → T-03:** estorno de receitas legítimas sem justificativa ou aprovação,
+  com distorção dos resultados contábeis e fiscais.
+- **CA07 → T-05:** ambos envolvem alteração indevida de valores da folha;
+  T-05 detalha a variante após revisão, enquanto CA07 também inclui sobrecarga.
+- **CA10 → T-08:** modificação de registros para ocultar ou atribuir a fraude
   a outra pessoa.
+- **CA11 → T-04:** alteração dos dados de entrada antes da apuração e geração
+  de obrigações fiscais incorretas.
+- **CA12 → T-06:** inserção ou alteração de dados por uma integração comprometida.
+- **CA13 → T-07:** criação ou alteração de pagamento encaminhado para execução
+  sem aprovação independente. A alteração após aprovação é outra variante de T-07.
 
 ## 5.4 R — Repudiation (Repúdio)
 
@@ -143,10 +171,10 @@ alteração indevida e seu efeito no negócio.
 |----|----------|-------------------|---------|
 | R-01 | P1 / UC-01, UC-02 | Um usuário nega um login ou uma validação MFA porque o sistema registra apenas sucesso/erro, sem usuário, horário, IP, dispositivo e identificador da sessão. | Dificulta investigar invasões e responsabilizar o autor de acessos indevidos. |
 | R-02 | P3 / UC-04, UC-06 | Um administrador nega ter criado uma conta, desativado um usuário ou alterado um perfil RBAC quando não existe trilha de antes/depois e aprovação da mudança. | Permissões indevidas podem permanecer sem autoria comprovável. |
-| R-03 | P5, P6 / UC-13, UC-16, UC-17, UC-19, UC-22 | Um contador nega um lançamento, estorno, reabertura de período ou retificação fiscal. | Perda da capacidade de reconstruir a contabilidade e contestar uma obrigação incorreta. |
+| R-03 | P5, P6 / UC-13, UC-16, UC-17, UC-19 a UC-22 | Um usuário nega um lançamento, estorno, reabertura de período, alteração dos dados usados na apuração ou retificação fiscal. Sem autoria, justificativa, aprovação, valores originais e vínculo entre as versões dos dados e os documentos gerados, o sistema não consegue reconstruir a operação. | Perda da capacidade de comprovar estornos e manipulações fiscais, reconstruir a contabilidade e contestar uma obrigação incorreta. |
 | R-04 | P7 / UC-25, UC-27, UC-28 | O responsável nega o processamento da folha, uma alteração trabalhista ou a transmissão ao eSocial. | Conflitos trabalhistas e dificuldade de comprovar o evento enviado ao governo. |
-| R-05 | P8, P10 / UC-29, UC-30, UC-44 | Um usuário nega a emissão/cancelamento de uma nota ou a autorização de um pagamento. | Risco financeiro, fiscal e de desvio de recursos. |
-| R-06 | P9 / UC-33 a UC-37 | O sistema não consegue provar qual credencial, integração ou operador enviou/recebeu um documento externo. | Falha na atribuição de transmissões e impossibilidade de auditar alterações entre sistemas. |
+| R-05 | P8, P10 / UC-29, UC-30, UC-44 | Um usuário nega a emissão/cancelamento de uma nota ou a criação, alteração ou autorização de um pagamento. A trilha não distingue solicitante e aprovador nem preserva os dados autorizados e o resultado da execução. | Dificuldade de comprovar a autoria de pagamentos indevidos e investigar desvio de recursos ou fraude fiscal. |
+| R-06 | P9 / UC-33 a UC-37 | O sistema não registra qual credencial, integração ou operador enviou/recebeu um documento ou executou uma requisição na API, nem correlaciona a requisição aos registros alterados. | Falha na atribuição de transmissões e alterações entre sistemas, dificultando investigar o uso indevido de uma credencial comprometida. |
 | R-07 | P11 / UC-38 a UC-41 | O próprio operador com acesso aos logs altera ou exclui evidências; a exportação não registra quem a realizou. | A trilha deixa de ter valor probatório e incidentes podem ser ocultados. |
 
 ### Controles recomendados
@@ -157,13 +185,24 @@ alteração indevida e seu efeito no negócio.
 2. Guardar o valor anterior e o novo valor nas mudanças relevantes, além da
    origem (interface, API ou integração) e do protocolo retornado por serviços
    externos.
+   Para estornos, preservar lançamento original, justificativa, solicitação
+   e aprovação. Para alterações fiscais, registrar autor, revisor e versões
+   dos dados utilizados nos documentos gerados.
 3. Tornar os logs append-only, com controle de acesso separado do ambiente de
    produção, retenção definida e cópias protegidas contra exclusão e alteração.
 4. Exigir reautenticação/MFA e, para pagamentos, aprovação segregada; registrar
-   a aprovação e a identidade dos envolvidos.
+   a criação, as alterações, a aprovação e a identidade dos envolvidos,
+   vinculando os dados autorizados ao resultado da execução.
 5. Alertar para exclusão, falha de gravação ou alteração de logs. A operação
    não deve ser considerada concluída quando a evidência obrigatória não puder
    ser persistida.
+6. **R-06:** nas APIs, registrar identificador não secreto da credencial,
+   integração, empresa, operação, objetos afetados, resultado e correlação
+   da requisição, incluindo tentativas rejeitadas. Quando a autenticação
+   falhar, registrar a identidade somente quando identificável, sem atribuir
+   autoria com base apenas em parâmetros enviados pelo cliente. Esses
+   registros apoiam a investigação do comprometimento da credencial;
+   não comprovam, isoladamente, a identidade da pessoa que a utilizou.
 
 ## 5.5 I — Information Disclosure (Divulgação de informação)
 
@@ -176,7 +215,7 @@ alteração indevida e seu efeito no negócio.
 | I-03 | P5, P6 / UC-13 a UC-23 | Consultas, relatórios, livros e arquivos fiscais permitem acesso excessivo ou são exportados sem proteção. | Divulgação de dados contábeis e fiscais da empresa. |
 | I-04 | P7 / UC-24 a UC-28 | Um funcionário acessa o holerite de outro, ou dados de folha/eSocial ficam visíveis em URLs, downloads ou logs. | Exposição de salários, documentos pessoais e informações trabalhistas. |
 | I-05 | P8 / UC-29 a UC-32 | Links de PDF/XML, notas e relatórios são previsíveis, públicos ou entregues ao destinatário errado. | Exfiltração de documentos fiscais e dados de clientes. |
-| I-06 | P9 / UC-33 a UC-37 | Chaves de API, certificados, extratos e respostas de serviços externos são transmitidos sem proteção ou armazenados em texto claro. | Comprometimento de integrações e vazamento em cadeia. |
+| I-06 | P9 / UC-33 a UC-37 | Chaves de API, certificados, extratos e respostas de serviços externos são transmitidos sem proteção ou armazenados em texto claro. Uma credencial de integração comprometida também permite obter dados contábeis, fiscais ou financeiros quando a API não restringe empresa, escopo e conteúdo das respostas. | Comprometimento de integrações, exposição indevida de dados de negócio e vazamento em cadeia. |
 | I-07 | P11 / UC-38 a UC-41 | Logs e exportações contêm valores, CPFs, tokens, payloads ou metadados de acesso em excesso. | Um recurso de auditoria torna-se fonte concentrada de vazamento. |
 | I-08 | P10 / UC-42 a UC-45 | Notificações e boletos exibem dados de cobrança para destinatário incorreto ou permitem observação por terceiros. | Fraude, exposição financeira e phishing direcionado. |
 
@@ -195,6 +234,9 @@ alteração indevida e seu efeito no negócio.
    exportações e aplicar expiração, revogação e rastreabilidade aos arquivos.
 5. Separar chaves por ambiente e integração, restringir escopos e revisar
    periodicamente retenção, acesso e compartilhamento conforme a LGPD.
+6. **I-06:** nas respostas das APIs, validar a empresa e o escopo autorizados
+   para a credencial e retornar apenas os campos necessários à operação.
+   Monitorar acessos anormais e revogar credenciais comprometidas.
 
 ## 5.6 D — Denial of Service (Negação de serviço)
 
@@ -226,6 +268,11 @@ alteração indevida e seu efeito no negócio.
 5. Monitorar filas, latência, erros, uso de CPU/memória/armazenamento e
    disponibilidade das dependências, com alertas e procedimento de recuperação.
 
+### Relação com os casos de abuso
+
+- **CA07 → D-04:** execuções concorrentes e repetidas do processamento da
+  folha sobrecarregam os recursos e impedem a conclusão do fechamento no prazo.
+
 ## 5.7 E — Elevation of Privilege (Elevação de Privilégio)
 
 ### Ameaças
@@ -234,11 +281,12 @@ alteração indevida e seu efeito no negócio.
 |----|----------|-------------------|---------|
 | E-01 | P3 / UC-04, UC-06 | Um administrador ou usuário manipula `role`, `user_id`, tenant ou permissões no cliente/API e obtém funções de outro perfil. | Acesso administrativo e alteração do modelo de autorização. |
 | E-02 | P4, P5 / UC-07 a UC-18 | Falha de isolamento multi-tenant permite consultar ou alterar empresa, lançamento ou plano de contas usando outro identificador. | Acesso cruzado entre clientes e fraude contábil. |
-| E-03 | P6 / UC-20 a UC-22 | Perfil operacional consegue retificar apuração, reabrir período ou emitir obrigação sem a aprovação exigida. | Alteração de obrigações fiscais e descumprimento de segregação de funções. |
+| E-03 | P6 / UC-19 a UC-22 | Perfil operacional altera dados de apuração reservados à supervisão, retifica resultados ou emite obrigações sem autorização e revisão independente. | Manipulação dos cálculos e das obrigações fiscais por usuário sem os privilégios exigidos e quebra da segregação de funções. |
 | E-04 | P7, P8 / UC-26, UC-30 a UC-32 | Funcionário ou cliente acessa holerites, notas, cancelamentos ou relatórios de outro usuário/empresa. | Exposição de dados e execução de operações restritas. |
-| E-05 | P9 / UC-37 | Usuário com permissão de configuração altera endpoint, escopo ou segredo e obtém acesso amplo às integrações. | Comprometimento de bancos, governo ou ERP do cliente. |
-| E-06 | P10 / UC-44 | O mesmo ator cadastra beneficiário, altera valor e aprova o pagamento sem revisão independente. | Desvio financeiro com privilégio acumulado. |
+| E-05 | P9 / UC-33 a UC-37 | Usuário com permissão de configuração altera endpoint, escopo ou segredo e obtém acesso amplo às integrações. Uma credencial comprometida também consegue executar operações ou atingir empresas além do escopo autorizado quando a API não aplica essas restrições. | Acesso indevido a dados e funções internas, fraude e comprometimento das integrações com bancos, governo ou ERP do cliente. |
+| E-06 | P10 / UC-44 | O mesmo ator cria ou seleciona uma operação, cadastra beneficiário ou altera valor e autoriza o pagamento sem aprovação independente. A ausência de MFA/reautenticação e de validação adicional por limite de valor facilita o uso indevido desse privilégio. | Pagamentos sem autorização do responsável financeiro e desvio de recursos por acúmulo de privilégios. |
 | E-07 | P11 / UC-39, UC-41 | Usuário de auditoria acessa logs de outro tenant ou exporta evidências sem necessidade de negócio. | Privilégio indevido sobre dados e evidências sensíveis. |
+| E-08 | P5 / UC-16 | Um usuário operacional executa estornos relevantes reservados a perfil superior ou sujeitos a aprovação porque o servidor não verifica a permissão específica nem a aprovação exigida. | Anulação indevida de receitas legítimas, distorção dos resultados contábeis e fiscais e quebra da segregação de funções. |
 
 ### Controles recomendados
 
@@ -247,18 +295,30 @@ alteração indevida e seu efeito no negócio.
    papel informado pelo cliente como autoridade.
 2. Separar permissões de leitura, alteração, aprovação, configuração de
    credenciais e administração; exigir aprovação independente para pagamentos,
-   retificações, cancelamentos e reabertura de períodos.
+   estornos críticos, alterações fiscais relevantes, retificações,
+   cancelamentos e reabertura de períodos.
 3. Revalidar autorização em cada etapa de uma operação e invalidar sessões e
    tokens quando perfil, vínculo ou empresa forem alterados.
-4. Restringir credenciais de integração por escopo, serviço e ambiente;
-   proteger alterações com MFA/reautenticação, revisão e trilha de auditoria.
+4. **E-05:** restringir credenciais de integração por empresa, escopo, operação,
+   serviço e ambiente; validar essas restrições no servidor a cada requisição,
+   inclusive com credencial válida. Proteger alterações de configuração com
+   MFA/reautenticação, revisão e trilha de auditoria.
 5. Testar sistematicamente IDOR, acesso horizontal (outro usuário/tenant) e
    acesso vertical (perfil superior), incluindo operações de exportação e
    tarefas assíncronas.
+6. **E-06:** impedir que o solicitante aprove o próprio pagamento e exigir
+   MFA/reautenticação do aprovador nas operações financeiras críticas.
+   Aplicar limites de valor e aprovação adicional conforme a política
+   financeira, verificando essas condições antes de encaminhar a operação
+   para execução.
+7. **E-08:** verificar no servidor a permissão específica para estornar e a
+   aprovação independente exigida para estornos críticos, vinculadas ao
+   lançamento e à empresa. Justificativa e registro de auditoria complementam
+   essas verificações de autorização.
 
 ## 5.8 Priorização
 
-As prioridades são qualitativas e preliminares. Para ST, considera-se **Alta**
+As prioridades são qualitativas e preliminares. Considera-se **Alta**
 a necessidade de tratar caminhos de tomada de conta ou fraude financeira
 direta; **Média** indica cenários que, além da falha descrita, dependem de
 acesso adicional a códigos, sessões, mensagens ou registros protegidos.
@@ -266,19 +326,39 @@ Essa distinção orienta a ordem inicial de análise, sem reduzir a gravidade
 do impacto. Não foram estimadas probabilidades nem medido o risco residual.
 As classificações devem ser revistas conforme a implementação e a exposição
 real; por exemplo, um armazenamento de sessões ou logs exposto eleva a urgência.
-As linhas de RI e DE mantêm as prioridades propostas nas respectivas análises.
+T-06 e E-05 passam a ter prioridade alta pelo caminho de fraude com uma
+integração comprometida; E-08 recebe prioridade alta pelo estorno indevido de
+receitas. As demais classificações mantêm as prioridades anteriores.
 
 | Prioridade | Risco STRIDE | Justificativa |
 |------------|------------|---------------|
-| Alta | S-01, S-03, S-06 | Permitem tomada de conta por credenciais, recuperação indevida ou uso de identidade empresarial comprometida, com possibilidade de operações externas. |
+| Alta | S-01, S-03, S-06 | Permitem tomada de conta por credenciais, recuperação indevida ou uso de identidade empresarial/de integração comprometida, com possibilidade de operações internas e externas. |
 | Média | S-02, S-04, S-05 | Exigem também obter um código ou sessão da vítima, ou conseguir intermediar/redirecionar uma conexão; o impacto potencial permanece elevado. |
 | Alta | T-01, T-02, T-03, T-04, T-05, T-07 | Afetam permissões, valores, obrigações ou pagamentos por operações de negócio expostas ao usuário. |
-| Média | T-06, T-08 | Pressupõem acesso à configuração ou às mensagens de integração, ou permissão de escrita sobre evidências; tornam-se urgentes se esses acessos estiverem expostos. |
-| Alta | E-02, E-03, E-06 | Podem permitir fraude entre empresas, alteração fiscal ou pagamento indevido. |
+| Alta | T-06 | Uma integração comprometida pode inserir ou modificar dados utilizados pelos módulos contábeis, fiscais e financeiros. |
+| Média | T-08 | Pressupõe permissão de escrita sobre evidências; torna-se urgente se esse acesso estiver exposto. |
+| Alta | E-02, E-03, E-05, E-06, E-08 | Podem permitir fraude entre empresas, manipulação fiscal, abuso do escopo de integrações, pagamento ou estorno indevido. |
 | Alta | I-02, I-04, I-06 | Envolvem dados pessoais, bancários, trabalhistas e credenciais de terceiros. |
 | Alta | R-03, R-05, R-07 | Sem evidência confiável, incidentes financeiros e fiscais não podem ser investigados. |
 | Média/Alta | D-03, D-04, D-06 | Indisponibilidade em fechamento, folha ou transmissão pode causar perda de prazo. |
 | Média | D-01, D-02, D-05, D-07 | Devem ser tratados com limites e filas antes de afetarem o restante da plataforma. |
+
+### Rastreabilidade dos casos de abuso atualizados
+
+As categorias principais e secundárias seguem os
+[casos de abuso](./06-casos-de-abuso.md). As relações abaixo apontam os
+cenários correspondentes e as variantes condicionais.
+
+| Caso de abuso | Ponto/UC | Categorias principais → ameaças | Categorias secundárias → ameaças |
+|---------------|----------|--------------------------------|---------------------------------|
+| CA06 — Estorno indevido de lançamentos | P5 / UC-16 | Tampering → T-03 | Repudiation → R-03; Elevation of Privilege → E-08 |
+| CA11 — Manipulação de dados para obrigações fiscais | P6 / UC-19 a UC-22 | Tampering → T-04 | Repudiation → R-03; Elevation of Privilege → E-03 |
+| CA12 — Manipulação por API de integração externa | P9 / UC-33 a UC-37 | Spoofing → S-06; Tampering → T-06 | Repudiation → R-06; Elevation of Privilege → E-05; Information Disclosure → I-06 |
+| CA13 — Autorização indevida de pagamento | P10 / UC-44 | Tampering → T-07; Elevation of Privilege → E-06 | Spoofing → S-01/S-04 (condicional); Repudiation → R-05 |
+
+Em CA13, S-01 e S-04 descrevem possíveis caminhos de acesso em P1, anteriores
+à operação em P10. A relação aplica-se às variantes com credenciais ou sessão
+comprometidas nas condições da seção 5.2; o caso também admite um ator interno.
 
 ## 5.9 Critérios de verificação
 
@@ -291,17 +371,44 @@ As linhas de RI e DE mantêm as prioridades propostas nas respectivas análises.
 - **S-05:** conexões com certificado expirado, cadeia não confiável ou nome
   de servidor incompatível são rejeitadas.
 - **S-06:** usuários sem permissão não conseguem acessar chaves privadas nem
-  acionar operações com elas; a revogação é validada em ambiente de teste do
-  provedor, considerando também tokens derivados e os prazos do protocolo.
+  acionar operações com elas. Nas APIs de entrada, credenciais expiradas ou
+  revogadas são rejeitadas. A revogação também é validada em ambiente de teste
+  do provedor para operações externas, considerando tokens derivados e os
+  prazos do protocolo.
 - **T-01 e T-02:** alterações de campos protegidos sem autorização são negadas
   e não modificam os registros; mudanças críticas exigem a aprovação prevista.
 - **T-03:** importações inconsistentes e gravações em períodos encerrados são
   rejeitadas sem deixar alterações parciais.
+- **T-03, R-03 e E-08 — CA06:** estorno crítico sem permissão, justificativa
+  ou aprovação independente é rejeitado sem alterar os registros. Um estorno
+  autorizado preserva o lançamento original e seu valor, o vínculo com o
+  estorno, autor, aprovador, justificativa e data/hora.
+- **T-04, R-03 e E-03 — CA11:** alterações de dados fiscais restritos por
+  perfil sem permissão são rejeitadas. Alterações relevantes ainda não
+  aprovadas não alimentam a apuração; após revisão independente, os documentos
+  gerados identificam a versão dos dados utilizada e permitem consultar autor,
+  revisor e histórico das alterações.
 - **T-04, T-05 e T-07:** alterar dados após a aprovação impede a execução ou
   transmissão até nova aprovação da versão modificada.
 - **T-06:** mensagens que falham nas verificações de integridade previstas
   pelo protocolo são rejeitadas e não atualizam dados de negócio; alterações
   de endpoint por um usuário sem permissão não são persistidas.
+- **T-06, E-05 e I-06 — CA12:** mesmo com credencial válida, requisições para
+  outra empresa, fora do escopo ou da operação autorizada são rejeitadas sem
+  alterar nem retornar dados de negócio. Dados com formato ou consistência
+  inválidos não são persistidos; requisições válidas dentro do escopo são
+  processadas e retornam somente os campos necessários.
+- **R-06 — CA12:** requisições aceitas e rejeitadas registram identificador
+  não secreto da credencial, integração, empresa, operação, objetos afetados,
+  resultado e correlação, conforme identificáveis, sem expor o segredo
+  utilizado nem tratar uma identidade não autenticada como autoria comprovada.
+  O uso de credencial comprometida pode ser rastreado e sua revogação impede
+  novas requisições, conforme a verificação de S-06.
+- **T-07, E-06 e R-05 — CA13:** o solicitante não aprova o próprio pagamento;
+  uma operação sem aprovação independente, MFA/reautenticação exigida ou
+  validação adicional por limite de valor não é encaminhada para execução.
+  Uma operação que atende às condições é encaminhada com trilha de criação,
+  alterações, solicitante, aprovador, dados autorizados e resultado da execução.
 - **T-08:** a conta da aplicação não consegue editar ou excluir a trilha;
   adulterações em exportações são detectadas pela verificação de integridade.
 - Cada ação de criação, alteração, exclusão, exportação, transmissão e
