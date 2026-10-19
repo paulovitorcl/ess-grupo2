@@ -4,6 +4,10 @@ Este documento especifica os **casos de uso** de um sistema que presta serviços
 contabilidade e realiza o **mapeamento das ameaças STRIDE** aplicáveis a cada
 funcionalidade, com justificativa breve de cada categoria.
 
+O detalhamento está em [Modelagem de ameaças com STRIDE](docs/05-modelagem-ameacas-stride.md),
+complementado pelos [Casos de abuso](docs/06-casos-de-abuso.md) e pelas
+[Considerações finais](docs/07-consideracoes-finais.md).
+
 ## Categorias STRIDE
 
 | Letra | Ameaça | Propriedade violada |
