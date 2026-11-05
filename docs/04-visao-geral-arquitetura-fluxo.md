@@ -15,6 +15,7 @@ flowchart TB
         Cliente([Cliente])
         Admin([Administrador])
         Auditor([Auditor])
+        Func([Funcionário do cliente])
     end
 
     subgraph Borda["Camada de Acesso"]
@@ -44,7 +45,7 @@ flowchart TB
         ERP["ERP do Cliente"]
     end
 
-    Contador & Cliente & Admin & Auditor --> WebAPI
+    Contador & Cliente & Admin & Auditor & Func --> WebAPI
     WebAPI --> Auth
     Auth --> Nucleo
     Nucleo --> DB
