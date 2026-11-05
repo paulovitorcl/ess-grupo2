@@ -17,10 +17,10 @@ sistema de contabilidade:
   permissões superiores às que lhe foram concedidas.
 
 As ameaças foram derivadas dos atores, pontos de interação e fluxos descritos
-em [3. Usuários Ativos e Pontos de Interação](./03-usuarios-e-pontos-de-interacao.md)
+em [3. Usuários, Ativos e Pontos de Interação](./03-usuarios-e-pontos-de-interacao.md)
 e [4. Visão Geral da Arquitetura e Fluxo](./04-visao-geral-arquitetura-fluxo.md).
 Os identificadores `UC-01` a `UC-45` seguem a relação de casos de uso do
-[README](../README.md).
+[Casos de uso e avaliação STRIDE por funcionalidade](casos-de-uso-stride.md).
 
 ## 5.1 Escopo e fronteiras de confiança
 

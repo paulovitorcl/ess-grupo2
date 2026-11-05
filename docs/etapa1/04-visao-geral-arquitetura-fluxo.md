@@ -100,4 +100,4 @@ sequenceDiagram
 > três fronteiras — a **Camada de Acesso** (Spoofing/Elevation), a **Persistência
 > e Trilha de Auditoria** (Tampering/Repudiation) e a **Camada de Integração**
 > (Spoofing/Information Disclosure/Denial of Service). O detalhamento por caso de
-> uso está no README e nos entregáveis do item 5.
+> uso está em [Casos de uso e STRIDE](casos-de-uso-stride.md) e na [Modelagem de ameaças](05-modelagem-ameacas-stride.md).
