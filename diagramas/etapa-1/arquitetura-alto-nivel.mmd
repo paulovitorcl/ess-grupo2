@@ -1,0 +1,46 @@
+flowchart TB
+    subgraph Atores["Atores"]
+        Contador([Contador])
+        Cliente([Cliente])
+        Admin([Administrador])
+        Auditor([Auditor])
+        Func([Funcionário do cliente])
+    end
+
+    subgraph Borda["Camada de Acesso"]
+        WebAPI["Aplicação Web / API"]
+        Auth["Autenticação + MFA / RBAC"]
+    end
+
+    subgraph Nucleo["Núcleo de Negócio"]
+        Cadastro["Cadastro"]
+        Escrit["Escrituração Contábil"]
+        Fiscal["Fiscal / Tributário"]
+        Folha["Folha de Pagamento"]
+        Docs["Emissão de Documentos"]
+        Pgto["Pagamentos"]
+    end
+
+    subgraph Dados["Persistência"]
+        DB[("Banco de Dados")]
+        Audit[("Trilha de Auditoria / Logs")]
+    end
+
+    subgraph Integr["Camada de Integração"]
+        Banco["Bancos / Open Finance"]
+        Receita["Receita Federal / SPED"]
+        Pref["Prefeituras / NFS-e"]
+        ESocial["eSocial"]
+        ERP["ERP do Cliente"]
+    end
+
+    Contador & Cliente & Admin & Auditor & Func --> WebAPI
+    WebAPI --> Auth
+    Auth --> Nucleo
+    Nucleo --> DB
+    Nucleo --> Audit
+    Escrit & Fiscal --> Banco & Receita
+    Docs --> Pref
+    Folha --> ESocial
+    Nucleo --> ERP
+    Pgto --> Banco

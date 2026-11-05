@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant N as Núcleo (Fiscal)
+    participant I as Camada de Integração
+    participant G as Serviço Governamental
+    participant L as Auditoria/Logs
+
+    N->>I: Solicita transmissão (SPED / NFS-e / eSocial)
+    I->>G: Envia documento assinado (certificado digital)
+    G-->>I: Protocolo de recebimento
+    I->>L: Registra protocolo e rastro
+    I-->>N: Confirma transmissão
