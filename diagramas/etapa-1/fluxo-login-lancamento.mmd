@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor C as Contador
+    participant W as Web/API
+    participant A as Auth (MFA/RBAC)
+    participant N as Núcleo (Escrituração)
+    participant D as Banco de Dados
+    participant L as Auditoria/Logs
+
+    C->>W: Credenciais (e-mail/senha)
+    W->>A: Valida credenciais + MFA
+    A-->>W: Sessão autenticada + perfil
+    C->>W: Registra lançamento D/C
+    W->>A: Verifica permissão (RBAC)
+    A-->>W: Autorizado
+    W->>N: Processa lançamento
+    N->>D: Persiste dado financeiro
+    N->>L: Grava trilha (quem/quando/valor)
+    L-->>C: Confirmação

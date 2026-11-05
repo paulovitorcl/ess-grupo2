@@ -15,6 +15,7 @@ flowchart TB
         Cliente([Cliente])
         Admin([Administrador])
         Auditor([Auditor])
+        Func([Funcionário do cliente])
     end
 
     subgraph Borda["Camada de Acesso"]
@@ -44,7 +45,7 @@ flowchart TB
         ERP["ERP do Cliente"]
     end
 
-    Contador & Cliente & Admin & Auditor --> WebAPI
+    Contador & Cliente & Admin & Auditor & Func --> WebAPI
     WebAPI --> Auth
     Auth --> Nucleo
     Nucleo --> DB
@@ -99,4 +100,4 @@ sequenceDiagram
 > três fronteiras — a **Camada de Acesso** (Spoofing/Elevation), a **Persistência
 > e Trilha de Auditoria** (Tampering/Repudiation) e a **Camada de Integração**
 > (Spoofing/Information Disclosure/Denial of Service). O detalhamento por caso de
-> uso está no README e nos entregáveis do item 5.
+> uso está em [Casos de uso e STRIDE](casos-de-uso-stride.md) e na [Modelagem de ameaças](05-modelagem-ameacas-stride.md).
