@@ -36,7 +36,7 @@ detecção de intrusões e DevSecOps.
 | Etapa | Status | Artefatos |
 | --- | --- | --- |
 | **1. Ameaças STRIDE e casos de abuso** | Concluída | [1. Identificação](docs/etapa1/01-identificacao-do-sistema.md) · [2. Descrição](docs/etapa1/02-descricao-do-sistema.md) · [3. Usuários, ativos e pontos de interação](docs/etapa1/03-usuarios-e-pontos-de-interacao.md) · [4. Arquitetura e fluxo](docs/etapa1/04-visao-geral-arquitetura-fluxo.md) · [Casos de uso e STRIDE por funcionalidade](docs/etapa1/casos-de-uso-stride.md) · [5. Modelagem STRIDE](docs/etapa1/05-modelagem-ameacas-stride.md) · [6. Casos de abuso](docs/etapa1/06-casos-de-abuso.md) · [7. Considerações finais](docs/etapa1/07-consideracoes-finais.md) |
-| **2. Riscos e NIST CSF 2.0** | Em andamento | [Introdução](docs/etapa2/2.0-analise-e-priorizacao-de-riscos.md) · [2.1 Probabilidade](docs/etapa2/2.1-criterios-probabilidade.md) · [2.2 Impacto](docs/etapa2/2.2-criterios-impacto.md) · [2.3 Cálculo e classificação](docs/etapa2/2.3-calculo-e-classificacao.md) |
+| **2. Riscos e NIST CSF 2.0** | Em andamento | [Introdução](docs/etapa2/2.0-analise-e-priorizacao-de-riscos.md) · [2.1 Probabilidade](docs/etapa2/2.1-criterios-probabilidade.md) · [2.2 Impacto](docs/etapa2/2.2-criterios-impacto.md) · [2.3 Cálculo e classificação](docs/etapa2/2.3-calculo-e-classificacao.md) · [2.4 Registro de riscos](docs/etapa2/2.4-registro-de-riscos.md) |
 | **3. Arquitetura segura** | Planejada | `docs/etapa3/` · `diagramas/etapa-3/` |
 | **4. Código seguro e testes** | Planejada | `docs/etapa4/` · [`codigo/etapa-4/`](codigo/etapa-4/) |
 | **5. Verificação de vulnerabilidades** | Planejada | [`evidencias/etapa-5/`](evidencias/etapa-5/) |
