@@ -1,0 +1,63 @@
+flowchart TB
+    subgraph Usuarios["Usuários (zona não confiável)"]
+        Contador([Contador])
+        Cliente([Cliente])
+        Func([Funcionário do cliente])
+        Admin([Administrador])
+        Auditor([Auditor])
+    end
+
+    subgraph Borda["Borda — DMZ"]
+        WAF["WAF + Gateway de API<br/>TLS 1.2+ · rate limit por IP/conta<br/>C1"]
+    end
+
+    subgraph App["Aplicação (zona confiável)"]
+        Web["Aplicação Web / API<br/>DTOs estritos · validação de esquema<br/>C6"]
+        Auth["Serviço de Autenticação<br/>MFA TOTP de uso único · 5 tentativas/15 min<br/>sessão no servidor com revogação<br/>C2 · RS03"]
+        Authz["Autorização no servidor<br/>RBAC + vínculo usuário–tenant<br/>tenant resolvido pela sessão<br/>C3 · RS02"]
+
+        subgraph Nucleo["Núcleo de Negócio"]
+            Modulos["Cadastro · Escrituração · Fiscal<br/>Folha · Documentos"]
+            Pgto["Pagamentos<br/>criador ≠ aprovador · reautenticação MFA<br/>hash do aprovado = executado · Idempotency-Key<br/>C4 · RS01"]
+        end
+
+        Integr["Camada de Integração<br/>mTLS · validação de hostname<br/>filas · circuit breaker<br/>C7"]
+    end
+
+    subgraph Dados["Dados (zona restrita)"]
+        DB[("Banco de Dados<br/>consultas filtradas por tenant_id<br/>criptografia em repouso")]
+        Vault[("Cofre de Segredos<br/>certificados A1 · chaves de API<br/>C8")]
+        Audit[("Trilha de Auditoria<br/>append-only / WORM · logs mascarados<br/>C5")]
+    end
+
+    Monit["Monitoramento / SIEM<br/>alertas de login, acesso negado<br/>e pagamentos anômalos"]
+
+    subgraph Externos["Serviços externos"]
+        Banco["Bancos / Open Finance"]
+        Gov["Receita Federal · Prefeituras · eSocial"]
+        ERP["ERP do Cliente"]
+    end
+
+    Contador & Cliente & Func & Admin & Auditor -->|HTTPS| WAF
+    WAF --> Web
+    Web -->|login + MFA| Auth
+    Web -->|toda requisição| Authz
+    Authz -->|permitido| Nucleo
+    Authz -.->|negado: HTTP 403| Audit
+    Pgto -->|reautenticação| Auth
+    Nucleo --> DB
+    Nucleo -->|evento: quem, tenant, antes/depois| Audit
+    Auth -->|tentativas e bloqueios| Audit
+    Nucleo --> Integr
+    Integr -->|lê segredo| Vault
+    Integr -->|mTLS| Banco
+    Integr -->|documento assinado| Gov
+    Integr -->|chave de escopo mínimo| ERP
+    Audit --> Monit
+
+    classDef controle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b1b1b
+    classDef dado fill:#e3f2fd,stroke:#1565c0,color:#1b1b1b
+    classDef externo fill:#fff3e0,stroke:#ef6c00,color:#1b1b1b
+    class WAF,Auth,Authz,Pgto,Web,Integr controle
+    class DB,Vault,Audit dado
+    class Banco,Gov,ERP externo

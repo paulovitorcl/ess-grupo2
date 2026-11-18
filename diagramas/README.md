@@ -7,6 +7,7 @@ Arquivos-fonte dos diagramas do trabalho, organizados por etapa.
 | 1 | [`etapa-1/arquitetura-alto-nivel.mmd`](etapa-1/arquitetura-alto-nivel.mmd) | Atores, camadas de acesso, núcleo, persistência e integrações | [4.1](../docs/etapa1/04-visao-geral-arquitetura-fluxo.md#41-arquitetura-de-alto-nível) |
 | 1 | [`etapa-1/fluxo-login-lancamento.mmd`](etapa-1/fluxo-login-lancamento.mmd) | Sequência do login ao lançamento auditado | [4.2](../docs/etapa1/04-visao-geral-arquitetura-fluxo.md#42-fluxo-típico--do-login-ao-lançamento-auditado) |
 | 1 | [`etapa-1/fluxo-transmissao-fiscal.mmd`](etapa-1/fluxo-transmissao-fiscal.mmd) | Sequência da transmissão fiscal (SPED/NFS-e/eSocial) | [4.3](../docs/etapa1/04-visao-geral-arquitetura-fluxo.md#43-fluxo-típico--integração-externa-transmissão-fiscal) |
+| 3 | [`etapa-3/arquitetura-segura.mmd`](etapa-3/arquitetura-segura.mmd) | Arquitetura segura com zonas de confiança e posição dos controles | [3.3](../docs/etapa3/3.3-diagrama-arquitetura-segura.md) |
 
 Os diagramas estão em [Mermaid](https://mermaid.js.org/), renderizado
 diretamente pelo GitHub nos documentos Markdown. Para gerar a imagem PNG de um
