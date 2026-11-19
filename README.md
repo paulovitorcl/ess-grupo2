@@ -40,7 +40,7 @@ detecção de intrusões e DevSecOps.
 | **3. Arquitetura segura** | Em andamento | [3.1 Requisitos de segurança](docs/etapa3/3.1-requisitos-de-seguranca.md) · [3.2 Vulnerabilidades catalogadas](docs/etapa3/3.2-mapeamento-de-vulnerabilidades.md) · [3.3 Diagrama da arquitetura segura](docs/etapa3/3.3-diagrama-arquitetura-segura.md) |
 | **4. Código seguro e testes** | Planejada | `docs/etapa4/` · [`codigo/etapa-4/`](codigo/etapa-4/) |
 | **5. Verificação de vulnerabilidades** | Planejada | [`evidencias/etapa-5/`](evidencias/etapa-5/) |
-| **6. Detecção de intrusões** | Planejada | [Roteiro](roteiros/etapa-6-deteccao-de-intrusoes.md) |
+| **6. Detecção de intrusões** | Concluída | [Roteiro](roteiros/etapa-6-deteccao-de-intrusoes.md) |
 | **7. DevSecOps e apresentação final** | Planejada | [Roteiro](roteiros/etapa-7-devsecops-e-video-final.md) |
 | **Artigo (SBC/IEEE)** | Planejado | [`artigo/`](artigo/) |
 
