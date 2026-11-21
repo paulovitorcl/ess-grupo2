@@ -1,0 +1,39 @@
+# Etapa 7 — Pipeline DevSecOps
+
+## Estado da etapa
+
+O Sistema de Contabilidade possui documentação de ameaças, riscos, requisitos e decisões arquiteturais.
+
+O pipeline abaixo é uma proposta documental. Os critérios de bloqueio são regras para um futuro fluxo de desenvolvimento e liberação; não estão automatizados. Não há execução comprovada de testes, análise de código e dependências, verificação dinâmica, implantação ou monitoramento operacional.
+
+Os relatórios e testes indicados são evidências a produzir. A verificação planejada com ZAP no Juice Shop deverá demonstrar o exercício de laboratório, sem ser apresentada como teste de segurança do sistema contábil.
+
+## Pipeline DevSecOps proposto
+
+| Fase | Atividade de segurança | Evidência a produzir ou revisar | Estado atual | Condição para continuar |
+| --- | --- | --- | --- | --- |
+| 1. Planejamento e análise de ameaças | Revisar ativos, STRIDE e casos de abuso quando houver mudança de funcionalidade; identificar efeito sobre pagamentos, identidade e isolamento entre empresas. | Registro de riscos atualizado e vínculo entre mudança, ameaça e controle. | Documentação disponível; revisão a cada mudança. | Riscos relevantes identificados, priorizados e com tratamento proposto; mudança sem análise retorna ao planejamento. |
+| 2. Requisitos e decisões de arquitetura | Conferir RS01, RS02 e RS03 e as decisões DA01–DA03; identificar onde a regra é aplicada e como será verificada. | Requisitos verificáveis, diagrama e decisões revisados com critérios de aceitação. | Documentação disponível; revisão a cada mudança. | Cada requisito afetado possui controle no servidor e verificação definida; contradições entre requisito e arquitetura foram resolvidas. |
+| 3. Implementação segura | Aplicar as duas práticas a serem selecionadas na Etapa 4, escrevendo antes os casos válidos e maliciosos; revisar tratamento de entradas, autorização e segredos conforme o recorte. | Código, pseudocódigo ou descrição detalhada, casos de teste e registro de revisão. | Práticas e implementação pendentes. | A solução atende aos casos definidos e não depende apenas da interface para aplicar segurança. Pseudocódigo permite avaliação documental, mas não habilita implantação. |
+| 4. Testes automatizados | Em uma implementação executável, executar testes positivos e negativos das práticas escolhidas e regressões dos controles alterados. | Relatório de execução vinculado à versão avaliada, com resultados por teste. | Não executado. | Testes obrigatórios aprovados; testes ausentes, ignorados ou falhos não contam como sucesso. Se houver somente pseudocódigo, registrar execução como pendente. |
+| 5. Análise de código e dependências | Quando existirem código e dependências, executar análise estática, busca de segredos e análise de componentes; revisar os alertas no contexto da aplicação. | Relatórios vinculados à versão, inventário de dependências e registro de análise dos alertas. | Não executado. | Nenhum segredo ativo exposto ou achado relevante sem análise; riscos remanescentes possuem tratamento e decisão documentada. Ferramentas sem código para analisar ficam registradas como não executadas. |
+| 6. Teste dinâmico ou pentest | Executar verificação autorizada em ambiente de teste e interpretar alertas. Na atividade acadêmica da Etapa 5, usar o laboratório local previsto. | Configuração, versão do ambiente, relatório, capturas e análise de três achados relevantes, ou menos com justificativa documentada. | Não executado. | Achados avaliados, limitações registradas e correções propostas. Um teste em Juice Shop não comprova segurança do sistema contábil nem autoriza sua implantação. |
+| 7. Implantação | Para uma futura versão executável, conferir configurações, permissões, credenciais, evidências das etapas anteriores e plano de recuperação antes de disponibilizar a mudança. | Registro de liberação com versão, resultados das verificações, riscos aceitos e procedimento de recuperação. | Não executado. | Bloqueios resolvidos e evidências referentes à própria aplicação disponíveis. Nesta versão documental, a implantação permanece não executada. |
+| 8. Monitoramento e resposta | Observar eventos e aplicar as regras que serão definidas na Etapa 6; investigar alertas, conter abuso e reavaliar riscos após incidentes. | Roteiro de detecção e resposta; em uma operação real, eventos, alertas e registros de incidente. | Roteiro de regras pendente; operação não implementada. | Mudanças seguem acompanhamento; incidente exige contenção e verificação antes da retomada afetada. Aprendizados retornam ao planejamento e aos testes. |
+
+## Critérios de bloqueio para liberação
+
+Uma versão candidata não deverá avançar para liberação enquanto ocorrer uma das condições abaixo. As verificações executáveis se aplicam quando houver implementação; documentos ou pseudocódigo não comprovam aprovação em CI. Não se presume uma política de branches ou promoção à main já configurada.
+
+| ID | Condição de bloqueio | Relação com o projeto | Ação necessária para retomar | Responsável proposto |
+| --- | --- | --- | --- | --- |
+| B01 | Teste obrigatório de segurança reprovado, ausente ou não executado para uma implementação que se pretende liberar. | RS01–RS03; R13, R18 e R01 | Corrigir a causa ou completar a verificação e executar novamente os testes afetados, preservando o resultado e a versão. | Desenvolvimento e revisão de segurança. |
+| B02 | Usuário acessa outra empresa sem vínculo, aprova a própria ordem ou executa dados diferentes dos aprovados. | R18 e R13; DA01 e DA02 | Corrigir a regra no servidor, acrescentar caso de regressão e demonstrar rejeição sem leitura, escrita ou pagamento indevido. | Desenvolvimento e responsável funcional. |
+| B03 | Credencial, token ou chave privada real encontrado no código, configuração versionada ou saída do processo. | R06 e R21; DA03 | Revogar ou rotacionar o segredo exposto, investigar seu uso, corrigir armazenamento e eliminar a exposição; apagar apenas a linha não invalida a credencial. | Infraestrutura e Segurança. |
+| B04 | Achado crítico ou alto relevante para a versão permanece sem análise ou tratamento definido. | Plano de tratamento da Etapa 2 | Avaliar alcance e exploração, corrigir e verificar ou registrar a decisão excepcional conforme os critérios de risco residual. Falso positivo exige justificativa. | Segurança e responsável pelo risco. |
+| B05 | Dependência apresenta vulnerabilidade conhecida aplicável e não há correção ou decisão de tratamento revisada. | Proteção da aplicação e das integrações | Atualizar, substituir ou aplicar mitigação verificável; reavaliar a dependência e executar testes de regressão. | Desenvolvimento e Segurança. |
+| B06 | Solicitação de implantação não possui evidências da própria aplicação ou não define recuperação da versão. | Continuidade e confiabilidade da liberação | Produzir evidências em ambiente representativo e revisar configuração, permissões e recuperação. Relatório do laboratório Juice Shop não substitui essa verificação. | Infraestrutura e responsável pela liberação. |
+| B07 | Documentação de segurança diverge dos controles ou do conteúdo da versão candidata. | RS01–RS03 e DA01–DA03 | Revisar a implementação ou os documentos, resolver a divergência e verificar os requisitos afetados. | Desenvolvimento e revisão de segurança. |
+| B08 | Decisão de liberação não identifica a versão avaliada e suas evidências. | Rastreabilidade da liberação | Vincular a revisão ao identificador da versão, aos resultados de verificação e às decisões de tratamento; mudanças posteriores exigem nova avaliação do que foi afetado. | Responsável pela liberação. |
+
+Os responsáveis são papéis propostos. A retomada exige evidência da correção ou decisão de tratamento documentada, quando aplicável; uma decisão de aceitação de risco não transforma um teste reprovado em aprovado.

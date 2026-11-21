@@ -41,7 +41,7 @@ detecção de intrusões e DevSecOps.
 | **4. Código seguro e testes** | Planejada | `docs/etapa4/` · [`codigo/etapa-4/`](codigo/etapa-4/) |
 | **5. Verificação de vulnerabilidades** | Planejada | [`evidencias/etapa-5/`](evidencias/etapa-5/) |
 | **6. Detecção de intrusões** | Planejada | [Roteiro](roteiros/etapa-6-deteccao-de-intrusoes.md) |
-| **7. DevSecOps e apresentação final** | Planejada | [Roteiro](roteiros/etapa-7-devsecops-e-video-final.md) |
+| **7. DevSecOps e apresentação final** | Em andamento | [Pipeline DevSecOps e condições de bloqueio](roteiros/etapa-7-pipeline-devsecops.md) |
 | **Artigo (SBC/IEEE)** | Planejado | [`artigo/`](artigo/) |
 
 > _Concluída_ = artefatos completos no repositório; _Em andamento_ = parte
