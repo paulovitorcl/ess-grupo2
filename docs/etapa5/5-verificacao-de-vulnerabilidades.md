@@ -14,18 +14,8 @@ A varredura foi conduzida por meio de uma sessão automatizada de *Automated Sca
 2. **Active Scan (Varredura Ativa DAST):** Envio de payloads de teste de injeção, manipulação de cabeçalhos e verificação de cookies de sessão contra os endpoints mapeados.
 
 
-## 3. Evidências da Execução
 
-### 3.1 Capturas de Tela do Ambiente de Execução
-
-![Evidência 01 - Execução do OWASP ZAP](../../evidencias/etapa-5/capturas-de-tela/evidencia-zap-execucao.png)  
-*Figura 1: Sessão de execução pelo OWASP ZAP usando http://localhost:3000.*
-
-![Evidência 02 - Árvore de Alertas do ZAP](../../evidencias/etapa-5/capturas-de-tela/evidencia-zap-alertas.png)  
-*Figura 2: Painel de alertas do OWASP ZAP com a listagem de vulnerabilidades identificadas.*
-
-
-## 4. Tabela Consolidada de Análise de Vulnerabilidades
+## 3. Tabela Consolidada de Análise de Vulnerabilidades
 
 | ID | Alerta ou Achado | Evidência Textual (ZAP) | Possível Impacto no Sistema Contábil | Relação com OWASP / CWE / Projeto | Correção Proposta |
 |---|---|---|---|---|---|
@@ -36,7 +26,7 @@ A varredura foi conduzida por meio de uma sessão automatizada de *Automated Sca
 
 
 
-## 5. Detalhamento e Interpretação dos Achados
+## 4. Detalhamento e Interpretação dos Achados
 
 ### Achado A01: Injeção SQL (*SQL Injection*)
 * **Descrição:** A varredura do ZAP enviou um payload malicioso contendo caracteres de controle SQL no parâmetro de busca, provocando uma falha de sintaxe não tratada no banco de dados.
@@ -82,7 +72,7 @@ A varredura foi conduzida por meio de uma sessão automatizada de *Automated Sca
 
 
 
-## 6. Análise de Limitações e Descarte de Falsos Positivos / Alertas Informativos
+## 5. Análise de Limitações e Descarte de Falsos Positivos / Alertas Informativos
 
 Como a execução do ZAP ocorreu de forma automatizada (DAST), foram gerados diversos alertas adicionais que foram analisados e classificados pelo grupo:
 
