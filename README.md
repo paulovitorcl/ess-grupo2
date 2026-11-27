@@ -41,11 +41,13 @@ detecção de intrusões e DevSecOps.
 | **4. Código seguro e testes** | Concluída | [Práticas e testes](docs/etapa4/4-codigo-seguro-e-testes.md) · [Código e testes executáveis](codigo/etapa-4/) · [Saída dos testes](evidencias/etapa-4/saida-testes.txt) |
 | **5. Verificação de vulnerabilidades** | Concluída | [Verificação com OWASP ZAP](docs/etapa5/5-verificacao-de-vulnerabilidades.md) · [Relatório e capturas](evidencias/etapa-5/) |
 | **6. Detecção de intrusões** | Concluída | [Roteiro](roteiros/etapa-6-deteccao-de-intrusoes.md) |
-| **7. DevSecOps e apresentação final** | Planejada | [Roteiro](roteiros/etapa-7-devsecops-e-video-final.md) |
+| **7. DevSecOps e apresentação final** | Pipeline documental concluído; roteiro inicial disponível; apresentação pendente | [Pipeline DevSecOps e condições de bloqueio](roteiros/etapa-7-devsecops-e-video-final.md) · [Roteiro da apresentação final](roteiros/etapa-7-apresentacao-final.md) |
 | **Artigo (SBC/IEEE)** | Planejado | [`artigo/`](artigo/) |
 
 > _Concluída_ = artefatos completos no repositório; _Em andamento_ = parte
 > dos itens produzida; _Planejada_ = etapa prevista, ainda a ser produzida.
+> A conclusão de uma etapa indica disponibilidade dos entregáveis acadêmicos,
+> não comprovação de segurança de uma aplicação em produção.
 
 ## Organização do repositório
 
