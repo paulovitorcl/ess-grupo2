@@ -1,0 +1,19 @@
+$ python3 -m unittest -v   # Python 3.14.6, 2026-11-25
+test_ts01_usuario_vinculado_le_recurso_da_propria_empresa (test_autorizacao.TestAutorizacaoPorTenant.test_ts01_usuario_vinculado_le_recurso_da_propria_empresa) ... ok
+test_ts02_administrador_de_outra_empresa_nao_le_recurso_alheio (test_autorizacao.TestAutorizacaoPorTenant.test_ts02_administrador_de_outra_empresa_nao_le_recurso_alheio) ... ok
+test_ts03_selecionar_empresa_sem_vinculo_e_negado (test_autorizacao.TestAutorizacaoPorTenant.test_ts03_selecionar_empresa_sem_vinculo_e_negado) ... ok
+test_ts04_alteracao_e_exclusao_em_outra_empresa_nao_persistem (test_autorizacao.TestAutorizacaoPorTenant.test_ts04_alteracao_e_exclusao_em_outra_empresa_nao_persistem) ... ok
+test_ts05_vinculo_revogado_bloqueia_sessao_ja_iniciada (test_autorizacao.TestAutorizacaoPorTenant.test_ts05_vinculo_revogado_bloqueia_sessao_ja_iniciada) ... ok
+test_ts06_perfil_cliente_nao_exclui_lancamento (test_autorizacao.TestAutorizacaoPorTenant.test_ts06_perfil_cliente_nao_exclui_lancamento) ... ok
+test_ts07_fluxo_legitimo_envia_exatamente_a_versao_aprovada (test_pagamentos.TestAutorizacaoDePagamentos.test_ts07_fluxo_legitimo_envia_exatamente_a_versao_aprovada) ... ok
+test_ts08_autoaprovacao_e_recusada (test_pagamentos.TestAutorizacaoDePagamentos.test_ts08_autoaprovacao_e_recusada) ... ok
+test_ts09_acima_da_alcada_exige_reautenticacao_mfa (test_pagamentos.TestAutorizacaoDePagamentos.test_ts09_acima_da_alcada_exige_reautenticacao_mfa) ... ok
+test_ts10_adulteracao_apos_aprovacao_bloqueia_envio (test_pagamentos.TestAutorizacaoDePagamentos.test_ts10_adulteracao_apos_aprovacao_bloqueia_envio) ... ok
+test_ts11_alteracao_apos_aprovacao_volta_para_pendente (test_pagamentos.TestAutorizacaoDePagamentos.test_ts11_alteracao_apos_aprovacao_volta_para_pendente) ... ok
+test_ts12_aprovador_de_outra_empresa_nao_aprova (test_pagamentos.TestAutorizacaoDePagamentos.test_ts12_aprovador_de_outra_empresa_nao_aprova) ... ok
+test_valor_invalido_e_recusado_na_criacao (test_pagamentos.TestAutorizacaoDePagamentos.test_valor_invalido_e_recusado_na_criacao) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.001s
+
+OK
