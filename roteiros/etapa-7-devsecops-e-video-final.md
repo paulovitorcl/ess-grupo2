@@ -1,4 +1,6 @@
-# Etapa 7 — Pipeline DevSecOps
+# Etapa 7 — DevSecOps e apresentação final
+
+Este documento reúne o pipeline proposto e suas condições de bloqueio. O [roteiro da apresentação final](etapa-7-apresentacao-final.md) contém a sequência de falas e evidências para a apresentação presencial e pode apoiar uma gravação opcional.
 
 ## Estado da etapa
 
